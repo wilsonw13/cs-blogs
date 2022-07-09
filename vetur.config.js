@@ -12,6 +12,7 @@ module.exports = {
   // support monorepos
   projects: [
     "./examples/env/vue", // Shorthand for specifying only the project root location
+    "./examples/env/nuxt2",
     // {
     //   // **required**
     //   // Where is your project?

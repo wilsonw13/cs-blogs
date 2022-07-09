@@ -1,15 +1,18 @@
 # A Guide on Environmental Variables in JS
 
-This guide will use the [dotenv](https://github.com/motdotla/dotenv) package, the most popular `.env` library for JavaScript.
+This guide will use the [dotenv](https://github.com/motdotla/dotenv) package, the most popular `.env` package for JavaScript.
 
 ## What are environmental variables?
 
 ---
 
-You can think of environmental variables as safes with information that only you, the developer, can access. The most common use for these variables is to store API and authentication keys. Enviornmental variables also allow you to have values that vary based on the current environment.
+Environmental variables exist everywhere in our computer, such as in our Windows environmental variables where the `PATH` variable needs to be edited or in framework-specific environmental variables where `BASE_URL` could be accessed.
 
-These variables are stored in `.env` files, which look like standard text files with each key-value pair being on a different line.
+In JS, environmental variables are able to be accessed server-side globally, but it is up to you if you want to also expose them to the client. You can think these environmental variables as safes with information that only you, the developer, can access. A common use for these variables is to store API and authentication keys. Environmental variables also allow you to have values that vary based on the current environment.
 
+You can add variables to be stored in  `.env` files, which look like standard text files with each key-value pair on a different line.
+
+`.env`
 ```env
 # This is a single line comment
 
@@ -32,23 +35,44 @@ The above variables are parsed as:
 }
 ```
 
-You can access these values by using `process.env` in JS:
+Normally, you can access these values by using the `process.env` object in JS, but it may differ from framework to framework.
 
+`example.js`
 ```js
 const url = process.env.API_URL
 console.log(url)
 // returns "https://xyz.com" 
 ```
 
-\*\* No matter what bundler or framework is used, you must restart the local server everytime you update an environmental variable *(either the key or the value)* in order to view the changes made.
+> Most of the time, accessing the `process.env` object directly will not work due to security reasons as it exposes all key-value pairs.
 
-\*\*\* It is also vital that the `.env` is not pushed to any version control system *(such as Git)*. You can do this by adding `.env` *(or whatever your `.env` is named)* on a seperate line in your `.gitignore`.
+> No matter what bundler or framework is used, you must restart the local server every time you update an environmental variable *(either the key or the value)* in order to view the changes made.
+
+> Although you should push default environmental variables *(such as the default `.env` file)* to a version control system *(such as Git)*, it is vital that sensitive information *(such as API keys)* be kept out. These sensitive variables should be stored in a `.env.local` file which is kept out of version control by adding `.env*.local` to your `.gitignore`.
+
+## What are environments?
+
+---
+
+You don't have to one singular `.env` file. Instead, you can have multiple `.env` files that with variables that change based on your specific environments. 
+
+These files are named `.env` with an environmental suffix. *(i.e. development, staging, test)* A `.local` suffix can also be appended where variables stored inside differ from computer to computer. This `.local` file should not be pushed to version control.
+
+Since there may be conflicting environmental variable names, the hierarchy for environments from highest to lowest priority goes as follows:
+
+1. `.env.[environment].local`
+2. `.env.[environment]`
+3. `.env.local`
+4. `.env`
+
+One common use for have various environments is if you have a separate database for testing and a separate database for production.
+
 
 ## Node
 
 ---
 
-Install the `dotenv` package by running `npm i dotenv` in your command line. Add this line at the top of your main JS file:
+Install the `dotenv` package by running `npm i dotenv` in your command line. Add this line at the top of your any JS file you need to access environmental variables in:
 
 ```js
 require("dotenv").config();
@@ -60,10 +84,10 @@ Create a `.env` file and add in your variables. You can access these variables t
 
 ---
 
-Create a `.env` file in the root directory and add in your variables. You can access these variables in JS through the `process.env` object.
+Create a `.env` file in the root directory and add in your variables. You can access these variables through the `process.env` object.
 
 
-\*\* Parcel uses the `dotenv` npm package thus you don't need to seperately install it.
+\*\* Parcel uses the `dotenv` npm package thus you don't need to separately install it.
 
 ## [Vue 2 (CLI)](https://cli.vuejs.org/guide/mode-and-env.html)
 
@@ -135,15 +159,68 @@ export default {
 
 ## [Nuxt 2](https://nuxtjs.org/docs/configuration-glossary/configuration-env/)
 
-Talk about the 2 ways, using the `env` property or by installing the `@nuxtjs/dotenv` package
+---
+
+There are several ways to access environmental variables in Nuxt and I will be using this `.env` file to explain:
+
+`.env`
+```env
+API_KEY=81fc1d51-e9ad-c07f2929cd5d
+API_URL="https://www.xyz.com"
+SECRET_NUMBER=13
+BOOLEAN=TRUE
+
+NUXT_ENV_AUTH_URL=https://www.abc.com
+NUXT_ENV_AUTH_PASSWORD=55CvtTrCuUH9
+```
+
+By far, the most easiest way to access the environmental variables is to prefix them with `NUXT_ENV_`. This automatically injects the variables into the `process.env` object allowing you to access the values easily.
+
+`App.vue`
+```js
+<script>
+export default {
+    ...
+    data() {
+        return {
+            authURL: process.env.NUXT_ENV_AUTH_URL,
+            authPassword: process.env.NUXT_ENV_AUTH_URL
+        }
+    },
+    ...
+}
+</script>
+```
+
+> You can't set `process.env` itself to a data property in Nuxt and access the environmental variables that way since Nuxt replaces all instances of `process.env.SOME_VAR` to its respective value when your code is compiled.
+
+You can also expose the environmental variables client-side by adding them to the `nuxt.config.js`:
+
+
+`nuxt.config.js`
+```js
+export default {
+    ...
+    env: {
+        baseURL: process.env.BASE_URL,
+    },
+    publicRuntimeConfig: {
+        url: process.env.API_URL,
+    },
+    privateRuntimeConfig: {
+        key: process.env.API_KEY,
+    },
+}
+```
+
+The [`env`](https://nuxtjs.org/docs/directory-structure/nuxt-config#env) object exposes the variables at build time which you can access through the `process.env` object. In this example, you would access the `BASE_URL` environmental variable with `process.env.baseURL`.
+
+The [`publicRuntimeConfig`](https://nuxtjs.org/docs/directory-structure/nuxt-config#publicruntimeconfig) and the [`privateRuntimeConfig`](https://nuxtjs.org/docs/directory-structure/nuxt-config#publicruntimeconfig) holds the variables during runtime. Public exposes these variables on the client while private doesn't. You can access these variables through the `$config` object. In this example, you can access the public variable with `$config.url`.
+
+Lastly, there is another way to access environmental variables which is through the [`@nuxtjs/dotenv`](https://www.npmjs.com/package/@nuxtjs/dotenv) package, but this solution is being [migrated](https://nuxtjs.org/tutorials/moving-from-nuxtjs-dotenv-to-runtime-config/) to runtime config.
+
+## [Environmental Variables on Netlify](https://docs.netlify.com/configure-builds/environment-variables/)
 
 ---
 
-
-
-
-
----
-- how to use them in Parcel, Eleventy, Vue, Nuxt
-- how to upload them to Netlify
-- different environments
+On Netlify, you can set environmental variables in two ways: per team and per site. Team environmental variables requires upgrading to Netlify Pro and they are overwritten by site environmental variables. You can edit and access team variables navigating to `Team settings > Sites > Global site settings > Shared environment variables` and site variables by navigating to `Site settings > Build & deploy > Environment > Environment variables`.
