@@ -1,5 +1,15 @@
 # A Guide on Environmental Variables in JS
 
+- [A Guide on Environmental Variables in JS](#a-guide-on-environmental-variables-in-js)
+  - [What are environmental variables?](#what-are-environmental-variables)
+  - [What are environments?](#what-are-environments)
+  - [Node](#node)
+  - [Parcel](#parcel)
+  - [Vue 2 (CLI)](#vue-2-cli)
+  - [Vue 3 + Vite](#vue-3--vite)
+  - [Nuxt 2](#nuxt-2)
+  - [Environmental Variables on Netlify](#environmental-variables-on-netlify)
+
 This guide will use the [dotenv](https://github.com/motdotla/dotenv) package, the most popular `.env` package for JavaScript.
 
 ## What are environmental variables?
