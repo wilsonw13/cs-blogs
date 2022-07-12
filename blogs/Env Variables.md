@@ -10,18 +10,17 @@ slug: 2022-07-09
 ### Table of Contents
 - [What are environmental variables?](#what-are-environmental-variables)
 - [What are environments?](#what-are-environments)
-- [Node](#node)
-- [Parcel](#parcel)
-- [Vue 2 (CLI)](#vue-2-cli)
-- [Vue 3 + Vite](#vue-3--vite)
-- [Nuxt 2](#nuxt-2)
+- [.env In Different Frameworks](#env-in-different-frameworks)
+  - [Node](#node)
+  - [Parcel](#parcel)
+  - [Vue 2 (CLI)](#vue-2-cli)
+  - [Vue 3 + Vite](#vue-3--vite)
+  - [Nuxt 2](#nuxt-2)
 - [Environmental Variables on Netlify](#environmental-variables-on-netlify)
 
-> This guide will use the [dotenv](https://github.com/motdotla/dotenv) package, the most popular `.env` package for JavaScript.
+> This article focuses on the [dotenv](https://github.com/motdotla/dotenv) package, the most popular `.env` package for JavaScript.
 
-## What are environmental variables?
-
----
+# What are environmental variables?
 
 Environmental variables exist everywhere in our computer, such as in our Windows environmental variables where the `PATH` variable needs to be edited or in framework-specific environmental variables where `BASE_URL` could be accessed.
 
@@ -67,9 +66,7 @@ console.log(url)
 
 > Although you should push default environmental variables *(such as the default `.env` file)* to a version control system *(such as Git)*, it is vital that sensitive information *(such as API keys)* be kept out. These sensitive variables should be stored in a `.env.local` file which is kept out of version control by adding `.env*.local` to your `.gitignore`.
 
-## What are environments?
-
----
+# What are environments?
 
 You don't have to one singular `.env` file. Instead, you can have multiple `.env` files that with variables that change based on your specific environments. 
 
@@ -84,6 +81,7 @@ Since there may be conflicting environmental variable names, the hierarchy for e
 
 One common use for have various environments is if you have a separate database for testing and a separate database for production.
 
+# .env In Different Frameworks
 
 ## Node
 
@@ -236,7 +234,7 @@ The [`publicRuntimeConfig`](https://nuxtjs.org/docs/directory-structure/nuxt-con
 
 Lastly, there is another way to access environmental variables which is through the [`@nuxtjs/dotenv`](https://www.npmjs.com/package/@nuxtjs/dotenv) package, but this solution is being [migrated](https://nuxtjs.org/tutorials/moving-from-nuxtjs-dotenv-to-runtime-config/) to runtime config.
 
-## [Environmental Variables on Netlify](https://docs.netlify.com/configure-builds/environment-variables/)
+# [Environmental Variables on Netlify](https://docs.netlify.com/configure-builds/environment-variables/)
 
 ---
 
