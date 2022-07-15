@@ -5,10 +5,34 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      x: 0,
+      y: 0,
+      move_speed: 10,
+    };
   },
   methods: {
-    methodOne() {},
+    startGame() {
+      const t = this;
+
+      function gameLoop() {
+        console.log(t);
+
+        moveCharacter(0, -t.move_speed);
+        moveCharacter(0, t.move_speed);
+        moveCharacter(-t.move_speed, 0);
+        moveCharacter(t.move_speed, 0);
+      }
+
+      function moveCharacter(x, y) {
+        console.log(x, y);
+      }
+
+      gameLoop();
+    },
+  },
+  mounted() {
+    this.startGame();
   },
 };
 </script>
