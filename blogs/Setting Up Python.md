@@ -1,10 +1,10 @@
 ---
-title: Intro to Python Flask  
+title: Setting Up a Python Project
 author: Wilson Wuchen
 date: 7-20-2022
 tags: ["Python"]
 image: 
-slug: 2022-07-23
+slug: 2022-07-20
 ---
 
 ### Table of Contents
@@ -18,7 +18,7 @@ slug: 2022-07-23
     - [Activating/Deactivating the Virtual Environment](#activatingdeactivating-the-virtual-environment)
   - [Installing `pip` (Package Installer for Python)](#installing-pip-package-installer-for-python)
   - [Adding `pip` to PATH](#adding-pip-to-path)
-- [Setting Up a Flask Project](#setting-up-a-flask-project)
+- [Setting Up a Python Project](#setting-up-a-python-project)
   - [Installing packages](#installing-packages)
   - [Setting up `.gitignore`](#setting-up-gitignore)
 
@@ -129,13 +129,13 @@ pip 22.2 from C:\Users\Wilson\AppData\Roaming\Python\Python310\site-packages\pip
 
 If you've done these steps correctly, it will output a version number along with the directory where `pip` is installed.
 
-# Setting Up a Flask Project
+# Setting Up a Python Project
 
 ## Installing packages
 
 ---
 
-Once you've installed `pip` globally, you can install packages with `pip install <package-name>`. But before we install any packages, we should [activate](#activatingdeactivating-the-virtual-environment) our virtual environment. The first package we should install is Flask:
+Once you've installed `pip` globally, you can install packages with `pip install <package-name>`. But before we install any packages, we should [activate](#activatingdeactivating-the-virtual-environment) our virtual environment. For example, if we're installing Flask, we should run:
 
 ```
 > pip install flask
@@ -172,7 +172,7 @@ Werkzeug==2.1.2
 ```
 
 
-This way, another developer can easily replicate your virtual environment and its packages by running `pip install -r requirements.txt`.
+This way, another developer can easily replicate your virtual environment and installing the necessary packages by running `pip install -r requirements.txt`.
 
 ## Setting up `.gitignore`
 
