@@ -15,3 +15,6 @@ def home():
 @app.route("/user/<int:id>")
 def user(id):
   return f"User ID: {id}"
+
+if __name__ == "__main__":
+  app.run(debug=True, use_reloader=True)

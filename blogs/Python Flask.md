@@ -10,20 +10,28 @@ slug: 2022-07-23
 ### Table of Contents
 
 - [Intro to Flask](#intro-to-flask)
+  - [What is Flask?](#what-is-flask)
   - [Setting up a Flask App](#setting-up-a-flask-app)
   - [Adding Routes](#adding-routes)
-  - [Running Flask](#running-flask)
+  - [Running Flask in Development](#running-flask-in-development)
 - [HTML Templates](#html-templates)
   - [Linking Static Files (CSS, JS, Images)](#linking-static-files-css-js-images)
   - [Using Python in HTML Templates](#using-python-in-html-templates)
 - [Deploying a Flask App](#deploying-a-flask-app)
   - [Render](#render)
   - [Heroku](#heroku)
-  - [AWS (Amazon Web Services)](#aws-amazon-web-services)
+    - [Procfile & runtime.txt](#procfile--runtimetxt)
+    - [Heroku Dashboard](#heroku-dashboard)
 
 > Make sure you have Python and pip installed on your computer and you are familiar with what a virtual environment is. If you haven't set that up yet, refer to [this article](Setting%20Up%20Python.md).
 
 # Intro to Flask
+
+## What is Flask?
+
+---
+
+Flask is a Python web framework that serves as the backend of a web app. It handles routing, authentication, and can serve dynamic HTML files using the [jinja2](https://jinja.palletsprojects.com/en/3.1.x/) templating engine. It also has a built in development server.
 
 ## Setting up a Flask App
 
@@ -81,7 +89,7 @@ def user(id):
   return f"User ID: {id}"
 ```
 
-## Running Flask
+## Running Flask in Development
 
 ---
 
@@ -94,7 +102,7 @@ For example if you have a file named `hello-world.py`, then to start the flask s
 > flask run
 ```
 
-To turn on debugging mode, which allow you to catch errors in production the environment. It also allows the page to update in real time without having to restart the server. You just have to save the code and refresh the page. To turn on debugging mode, set the `FLASK_DEBUG` environmental variable to `1` before starting the server:
+To turn on debugging mode, set the `FLASK_DEBUG` environmental variable to `1` before starting the server. This turns on debug mode which shows a debugger in the browser if an error were to occur. It also allows the server to update automatically whenever the code is saved, though a refresh on the webpage is needed.
 
 ```
 > $env:FLASK_DEBUG = 1
@@ -268,30 +276,59 @@ def index():
 
 # Deploying a Flask App
 
-> [Gunicorn](https://flask.palletsprojects.com/en/2.1.x/deploying/gunicorn) is a Python web server, that cannot run on Windows, but is most often ran on Linux. Some of the following hosting platforms use Gunicorn. It can be installed with `pip install gunicorn` and `requirements.txt` should be updated with `pip freeze > requirements.txt`.
+[Gunicorn](https://flask.palletsprojects.com/en/2.1.x/deploying/gunicorn) is a WSGI (Web Service Graphical Interface) that runs a production server Python web application. In contrast, the built-in `flask run` command runs a development WSGI server that cannot handle numerous requests. Gunicorn only runs on Unix operating systems such as Linux. 
+
+Before you deploy on any of these sites, install Gunicorn with: `pip install gunicorn`. Once it's installed, you should update `requirements.txt` with the new dependency by running: `pip freeze > requirements.txt`.
 
 
 ## [Render](https://render.com/)
 
 ---
 
+> Make sure Gunicorn is installed and added to `requirements.txt`.
+
 Once you created your Render account, if you haven't already, link you GitHub account in `Account Settings`.
 
 On your home page or dashboard, create a new `Web Service` and connect to your repository. Make sure this repository is the root of the Flask project.
 
-In `Environment`, choose `Python 3`.
-In `Build Command`, make sure it links to the text file that contains all the pip packages.
-In `Start Command`, the command is `gunicorn <main_file_name>:<app_variable>`. In my case, with the above code snippets, I would use `gunicorn app:app`.
+* In `Environment`, choose `Python 3`.
+* In `Build Command`, make sure it links to the text file that contains all the pip packages.
+* In `Start Command`, the command is `gunicorn <main_file_name>:<app_variable>`. The app_variable is the variable name of the Flask instance/object. In my case, with the [above code snippets](#setting-up-a-flask-app), I would use the command: `gunicorn app:app`.
+
+Then you can continue with creating the web service.
 
 
 ## [Heroku](https://www.heroku.com/)
 
 ---
 
-## [AWS (Amazon Web Services)](https://aws.amazon.com/elasticbeanstalk/)
+> Make sure Gunicorn is installed and added to `requirements.txt`.
 
----
+### Procfile & runtime.txt
 
+In our root directory, create a new file called `Procfile` with no file extension:
 
+`Procfile`
+```
+web: gunicorn <main_file_name>:<app_variable>
+```
 
-- *** Hosting Flask on Render & Heroku & AWS
+Replace `<main_file_name>`, with the name of your Python main file (without the `.py` extension) and replace `<app_variable>` with the name of your Flask instance/object. In my case, with the [above code snippets](#setting-up-a-flask-app), I would write:
+
+`Procfile`
+```
+web: gunicorn app:app
+```
+
+Then create a `runtime.txt` detailing the Python version:
+
+`runtime.txt`
+```
+python-3.10.5
+```
+
+### Heroku Dashboard
+
+Now on your dashboard, create a new `app`.
+
+On the `Deploy` tab, connect to GitHub and connect to your repository. `Enable Automatic Deploys` if you so choose to. Then `Deploy Branch`. 
